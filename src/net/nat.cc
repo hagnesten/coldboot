@@ -1026,7 +1026,7 @@ namespace net {
 		uint32_t sender = be32 ( arp + 14 );
 		uint32_t wanted = be32 ( arp + 24 );
 
-		if ( ( wanted & 0xFFFFFF00u ) != ( gateway_address & 0xFFFFFF00u ) || wanted == guest_address || wanted == sender )
+		if ( wanted != gateway_address && wanted != resolver_address && wanted != tools_address )
 			return;
 
 		uint8_t reply [ 60 ] = { };

@@ -366,6 +366,9 @@ namespace tests {
 
 		bool resolved = catcher->wait ( 1, 2000 ) && get16 ( catcher->frames [ 0 ] + 12 ) == 0x0806 && get16 ( catcher->frames [ 0 ] + 20 ) == 2 && get_be32 ( catcher->frames [ 0 ] + 28 ) == net::nat::gateway_address && catcher->frames [ 0 ] [ 0 ] == 0x02 && catcher->frames [ 0 ] [ 5 ] == 0x45;
 
+		arp [ 41 ] = 77;
+		router->send ( arp, 42 );
+
 		uint8_t bootp [ 8 + 244 ] = { };
 
 		set16 ( bootp, 68 );
@@ -392,7 +395,7 @@ namespace tests {
 		const uint8_t* offer = catcher->wait ( 2, 2000 ) ? catcher->frames [ 1 ] : nullptr;
 		bool leased = offer && offer [ 23 ] == 17 && get16 ( offer + 36 ) == 68 && get_be32 ( offer + 42 + 4 ) == 0x12345678 && get_be32 ( offer + 42 + 16 ) == net::nat::guest_address && offer [ 42 + 240 ] == 53 && offer [ 42 + 242 ] == 2;
 
-		expect ( resolved && leased, "network: the NAT answers ARP for the gateway and offers 10.0.2.15 over DHCP" );
+		expect ( resolved && leased, "network: the NAT answers ARP for the gateway, not for other hosts, and offers 10.0.2.15 over DHCP" );
 
 		uint8_t echo [ 12 ] = { 8, 0, 0, 0, 0x12, 0x34, 0, 1, 'p', 'i', 'n', 'g' };
 
