@@ -148,8 +148,10 @@ namespace pc {
 		delete sata;
 		delete flash;
 		flash = nullptr;
+		delete fast_usb;
 		delete stick;
 		delete hub;
+		fast_usb = nullptr;
 		stick = nullptr;
 		hub = nullptr;
 		tools.router = nullptr;
@@ -244,9 +246,24 @@ namespace pc {
 			stick = new usb_storage ( );
 			stick->attach ( stick_drive.present ( ) ? &stick_drive : nullptr );
 			hub->plug ( 0, stick );
-			usb->plug ( 1, hub );
+
+			if ( !options.xhci )
+				usb->plug ( 1, hub );
 
 		}
+
+		if ( options.xhci ) {
+
+			fast_usb = new xhci ( *board, vm, 21 );
+			vm.attach_memory ( fast_usb->memory_base, xhci::memory_size, fast_usb );
+			board->pci.attach ( 8, 0, fast_usb );
+			board->add_ticker ( fast_usb );
+
+			if ( hub )
+				fast_usb->plug ( 0, hub );
+
+		}
+
 		board->add_ticker ( usb );
 		sound = new hda ( *board, vm, 17 );
 		sound->connect ( speaker );

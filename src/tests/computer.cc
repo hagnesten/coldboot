@@ -618,6 +618,10 @@ namespace tests {
 				for ( int32_t c = 0; c < MAX_PATH - 1 && path [ c ]; c++ )
 					options->usb_disk [ c ] = path [ c ];
 
+			} else if ( base::same_text ( arguments [ i ], L"--xhci" ) ) {
+
+				options->xhci = true;
+
 			} else if ( base::same_text ( arguments [ i ], L"--nvme" ) ) {
 
 				const wchar_t* path = next ( );

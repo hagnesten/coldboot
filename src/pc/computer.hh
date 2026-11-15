@@ -12,6 +12,7 @@
 #include "pc/tools.hh"
 #include "pc/uefi.hh"
 #include "pc/uhci.hh"
+#include "pc/xhci.hh"
 
 namespace pc {
 
@@ -30,6 +31,7 @@ namespace pc {
 		bool ask_internet = false;
 		bool fresh_identity = false;
 		bool disposable = false;
+		bool xhci = false;
 		char proxy [ 128 ] = { };
 		wchar_t iso [ MAX_PATH ] = { };
 		wchar_t disk [ MAX_PATH ] = { };
@@ -115,6 +117,7 @@ namespace pc {
 		ahci* sata = nullptr;
 		nvme* flash = nullptr;
 		usb_hub* hub = nullptr;
+		xhci* fast_usb = nullptr;
 		usb_storage* stick = nullptr;
 		sound_sink* speaker = nullptr;
 		bios* firmware = nullptr;
