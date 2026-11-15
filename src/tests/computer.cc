@@ -611,6 +611,13 @@ namespace tests {
 				for ( int32_t c = 0; c < MAX_PATH - 1 && path [ c ]; c++ )
 					options->sata [ c ] = path [ c ];
 
+			} else if ( base::same_text ( arguments [ i ], L"--nvme" ) ) {
+
+				const wchar_t* path = next ( );
+
+				for ( int32_t c = 0; c < MAX_PATH - 1 && path [ c ]; c++ )
+					options->nvme [ c ] = path [ c ];
+
 			} else if ( base::same_text ( arguments [ i ], L"--memory" ) )
 				options->memory = static_cast < uint64_t > ( number ( next ( ) ) ) << 20;
 			else if ( base::same_text ( arguments [ i ], L"--cpus" ) )

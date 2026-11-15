@@ -146,6 +146,8 @@ namespace pc {
 		delete nic;
 		delete sound;
 		delete sata;
+		delete flash;
+		flash = nullptr;
 		tools.router = nullptr;
 		router = nullptr;
 		nic = nullptr;
@@ -244,6 +246,18 @@ namespace pc {
 			sata->attach ( sata_drive.present ( ) ? &sata_drive : nullptr );
 			vm.attach_memory ( sata->memory_base, ahci::memory_size, sata );
 			board->pci.attach ( 6, 0, sata );
+
+		}
+
+		if ( options.nvme [ 0 ] ) {
+
+			if ( !flash_drive.present ( ) && !flash_drive.open ( options.nvme, true ) )
+				flash_drive.open ( options.nvme, false );
+
+			flash = new nvme ( *board, vm, 20 );
+			flash->attach ( flash_drive.present ( ) ? &flash_drive : nullptr );
+			vm.attach_memory ( flash->memory_base, nvme::memory_size, flash );
+			board->pci.attach ( 7, 0, flash );
 
 		}
 
