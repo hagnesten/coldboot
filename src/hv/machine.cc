@@ -786,6 +786,27 @@ namespace hv {
 
 	}
 
+	uint32_t machine::fetch_instruction ( cpu_state cpu, uint8_t* out ) {
+
+		uint64_t where = cpu.code64 ( ) ? cpu.rip : ( cpu.segments [ SEG_CS ].base + cpu.rip ) & 0xFFFFFFFF;
+		uint32_t count = 0;
+
+		for ( uint32_t i = 0; i < 15; i++ ) {
+
+			uint64_t physical = 0;
+
+			if ( !translate ( cpu, *this, where + i, false, physical ) )
+				break;
+
+			read ( physical, out + i, 1 );
+			count = i + 1;
+
+		}
+
+		return count;
+
+	}
+
 	bool machine::emulate_at ( uint32_t index, const uint8_t* bytes, uint32_t count ) {
 
 		cpu_state cpu;
@@ -794,27 +815,31 @@ namespace hv {
 		if ( !get_state ( index, cpu ) )
 			return fail ( index, "couldn't read a processor's registers", nullptr, 0 );
 
+		cpu_state saved = cpu;
+
 		if ( !count ) {
 
-			uint64_t where = cpu.code64 ( ) ? cpu.rip : ( cpu.segments [ SEG_CS ].base + cpu.rip ) & 0xFFFFFFFF;
-
-			for ( uint32_t i = 0; i < 15; i++ ) {
-
-				uint64_t physical = 0;
-
-				if ( !translate ( cpu, *this, where + i, false, physical ) )
-					break;
-
-				read ( physical, fetched + i, 1 );
-				count = i + 1;
-
-			}
-
+			count = fetch_instruction ( cpu, fetched );
 			bytes = fetched;
 
 		}
 
 		emulate_result result = emulate ( cpu, *this, bytes, count );
+
+		if ( result == EMULATE_UNSUPPORTED && bytes != fetched ) {
+
+			uint32_t whole = fetch_instruction ( saved, fetched );
+
+			if ( whole > count ) {
+
+				cpu = saved;
+				bytes = fetched;
+				count = whole;
+				result = emulate ( cpu, *this, bytes, count );
+
+			}
+
+		}
 
 		if ( result == EMULATE_UNSUPPORTED )
 			return fail ( index, "a device was touched by an instruction Coldboot can't emulate yet:", bytes, count );

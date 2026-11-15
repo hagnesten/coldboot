@@ -196,6 +196,8 @@ namespace hv {
 
 		bool emulate_at ( uint32_t index, const uint8_t* bytes, uint32_t count );
 
+		uint32_t fetch_instruction ( cpu_state cpu, uint8_t* out );
+
 		bool inject_fault ( uint32_t index, const cpu_state& cpu );
 
 		bool raise ( uint32_t index, uint32_t vector, uint32_t code );
