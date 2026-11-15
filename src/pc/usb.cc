@@ -105,6 +105,9 @@ namespace pc {
 					if ( recipient == 0 && value == 1 )
 						wakeup = code == 0x03;
 
+					if ( recipient == 2 && code == 0x01 && value == 0 )
+						clear_halt ( static_cast < uint8_t > ( packet [ 4 ] & 0x0F ) );
+
 					return 0;
 
 				case 0x05:
@@ -160,10 +163,16 @@ namespace pc {
 
 		if ( endpoint ) {
 
-			if ( !configuration || pid != pid_in )
+			if ( !configuration )
 				return usb_stall;
 
-			return poll ( endpoint, data, size );
+			if ( pid == pid_in )
+				return poll ( endpoint, data, size );
+
+			if ( pid == pid_out )
+				return receive ( endpoint, data, size );
+
+			return usb_stall;
 
 		}
 

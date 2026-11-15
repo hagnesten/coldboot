@@ -310,8 +310,14 @@ namespace pc {
 
 		for ( int32_t i = 0; i < port_count; i++ ) {
 
-			if ( devices [ i ] && ( ports [ i ] & PORT_ENABLED ) && !( ports [ i ] & ( PORT_RESET | PORT_SUSPEND ) ) && devices [ i ]->address == address )
-				return devices [ i ];
+			if ( devices [ i ] && ( ports [ i ] & PORT_ENABLED ) && !( ports [ i ] & ( PORT_RESET | PORT_SUSPEND ) ) ) {
+
+				usb_device* found = devices [ i ]->route ( address );
+
+				if ( found )
+					return found;
+
+			}
 
 		}
 

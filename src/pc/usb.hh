@@ -21,10 +21,24 @@ namespace pc {
 
 		int32_t transfer ( uint8_t pid, uint8_t endpoint, uint8_t* data, int32_t length );
 
+		virtual usb_device* route ( uint8_t target ) {
+
+			return target == address ? this : nullptr;
+
+		}
+
 		uint8_t address = 0;
 		uint8_t configuration = 0;
 
 	protected:
+
+		virtual int32_t receive ( uint8_t, const uint8_t*, int32_t ) {
+
+			return usb_stall;
+
+		}
+
+		virtual void clear_halt ( uint8_t ) { }
 
 		virtual int32_t descriptor ( uint8_t type, uint8_t index, uint8_t* reply, int32_t room ) = 0;
 
