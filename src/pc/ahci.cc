@@ -67,6 +67,7 @@ namespace pc {
 		identify ( 0x8086, 0x2922, 0x01, 0x06, 0x01, 0x02, 0x00 );
 		set_bar ( 5, memory_size, false, default_memory );
 		set_interrupt ( 1, 11 );
+		add_msi ( 0x80 );
 		config [ 0x04 ] = 0x06;
 		config [ 0x2C ] = 0x86;
 		config [ 0x2D ] = 0x80;
@@ -583,11 +584,7 @@ namespace pc {
 
 		bool wanted = ( global_control & CONTROL_INTERRUPTS ) && interrupt_status;
 
-		if ( wanted == line )
-			return;
-
-		line = wanted;
-		bus.set_irq ( irq, wanted );
+		signal ( bus, vm, irq, wanted, line );
 
 	}
 
