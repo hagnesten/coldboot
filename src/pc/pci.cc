@@ -38,6 +38,78 @@ namespace pc {
 
 	}
 
+	void pci_function::add_msi ( uint8_t offset ) {
+
+		msi_offset = offset;
+		config [ 0x06 ] = static_cast < uint8_t > ( config [ 0x06 ] | 0x10 );
+		config [ 0x34 ] = offset;
+		config [ offset ] = msi_id;
+		config [ offset + 1 ] = 0;
+		config [ offset + 2 ] = 0x80;
+		config [ offset + 3 ] = 0;
+
+	}
+
+	bool pci_function::msi_enabled ( ) const {
+
+		return msi_offset && ( config [ msi_offset + 2 ] & 1 );
+
+	}
+
+	bool pci_function::send_msi ( hv::machine& target ) const {
+
+		uint32_t address = read_config ( msi_offset + 4u, 4 );
+		uint32_t high = read_config ( msi_offset + 8u, 4 );
+		uint32_t data = read_config ( msi_offset + 12u, 2 );
+		uint32_t mode = data >> 8 & 7;
+		uint32_t type = WHvX64InterruptTypeFixed;
+
+		if ( high || ( address & 0xFFF00000u ) != msi_window )
+			return false;
+
+		if ( mode == 1 )
+			type = WHvX64InterruptTypeLowestPriority;
+		else if ( mode == 4 )
+			type = WHvX64InterruptTypeNmi;
+		else if ( mode != 0 )
+			return false;
+
+		return target.interrupt ( address >> 12 & 0xFF, data & 0xFF, ( address & 4 ) != 0, false, type );
+
+	}
+
+	void pci_function::signal ( platform_bus& bus, hv::machine& target, uint32_t irq, bool wanted, bool& line ) {
+
+		if ( msi_enabled ( ) ) {
+
+			if ( pin_high ) {
+
+				pin_high = false;
+				bus.set_irq ( irq, false );
+
+			}
+
+			if ( wanted && !line && send_msi ( target ) )
+				messages_sent++;
+
+			line = wanted;
+
+			return;
+
+		}
+
+		bool level = wanted && !( config [ 0x05 ] & 0x04 );
+
+		line = wanted;
+
+		if ( level == pin_high )
+			return;
+
+		pin_high = level;
+		bus.set_irq ( irq, level );
+
+	}
+
 	uint32_t pci_function::bar_address ( int32_t index ) const {
 
 		uint32_t value = read_config ( 0x10 + static_cast < uint32_t > ( index ) * 4, 4 );
@@ -64,7 +136,18 @@ namespace pc {
 			uint32_t at = offset + i;
 			uint8_t byte = static_cast < uint8_t > ( value >> ( i * 8 ) );
 
-			if ( at == 0x04 )
+			if ( msi_offset && at >= msi_offset && at < msi_offset + 14u ) {
+
+				uint32_t relative = at - msi_offset;
+
+				if ( relative == 2 )
+					config [ at ] = static_cast < uint8_t > ( 0x80 | ( byte & 0x71 ) );
+				else if ( relative == 4 )
+					config [ at ] = static_cast < uint8_t > ( byte & 0xFC );
+				else if ( relative >= 4 )
+					config [ at ] = byte;
+
+			} else if ( at == 0x04 )
 				config [ at ] = static_cast < uint8_t > ( byte & 0x47 );
 			else if ( at == 0x05 )
 				config [ at ] = static_cast < uint8_t > ( byte & 0x05 );
