@@ -69,6 +69,7 @@ namespace pc {
 		identify ( 0x8086, 0x293A, 0x0C, 0x03, 0x20, 0x03, 0x00 );
 		set_bar ( 0, memory_size, false, default_memory );
 		set_interrupt ( 1, 11 );
+		add_msi ( 0x50 );
 		config [ 0x04 ] = 0x06;
 		config [ 0x60 ] = 0x20;
 		config [ 0x61 ] = 0x20;
@@ -651,11 +652,7 @@ namespace pc {
 
 		bool wanted = ( status & enabled & STATUS_CLEARABLE ) != 0;
 
-		if ( wanted == line )
-			return;
-
-		line = wanted;
-		bus.set_irq ( irq, wanted );
+		signal ( bus, vm, irq, wanted, line );
 
 	}
 
