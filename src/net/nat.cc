@@ -1235,6 +1235,7 @@ namespace net {
 			return;
 
 		uint8_t kind = 0;
+		uint32_t wanted = 0;
 
 		for ( uint32_t at = 240; at < size; ) {
 
@@ -1256,11 +1257,16 @@ namespace net {
 			if ( code == 53 && length >= 1 && at + 2 < size )
 				kind = data [ at + 2 ];
 
+			if ( code == 50 && length >= 4 && at + 6 <= size )
+				wanted = be32 ( data + at + 2 );
+
 			at += 2u + length;
 
 		}
 
-		uint8_t reply_kind = kind == 1 ? 2 : ( kind == 3 || kind == 8 ? 5 : 0 );
+		uint32_t current = be32 ( data + 12 );
+		bool refused = kind == 3 && ( ( wanted && wanted != guest_address ) || ( current && current != guest_address ) );
+		uint8_t reply_kind = kind == 1 ? 2 : refused ? 6 : ( kind == 3 || kind == 8 ? 5 : 0 );
 
 		if ( !reply_kind )
 			return;
@@ -1275,7 +1281,7 @@ namespace net {
 
 		if ( kind == 8 )
 			move_bytes ( reply + 12, data + 12, 4 );
-		else
+		else if ( !refused )
 			put32 ( reply + 16, guest_address );
 
 		put32 ( reply + 20, gateway_address );
@@ -1296,12 +1302,22 @@ namespace net {
 		option ( 53, reply_kind, 1 );
 		option ( 54, gateway_address, 4 );
 
-		if ( kind != 8 )
-			option ( 51, 86400, 4 );
+		if ( !refused ) {
 
-		option ( 1, 0xFFFFFF00u, 4 );
-		option ( 3, gateway_address, 4 );
-		option ( 6, resolver_address, 4 );
+			if ( kind != 8 ) {
+
+				option ( 51, 86400, 4 );
+				option ( 58, 43200, 4 );
+				option ( 59, 75600, 4 );
+
+			}
+
+			option ( 1, 0xFFFFFF00u, 4 );
+			option ( 3, gateway_address, 4 );
+			option ( 6, resolver_address, 4 );
+
+		}
+
 		reply [ at++ ] = 255;
 		udp_out ( gateway_address, 67, 0xFFFFFFFFu, 68, reply, at < 300 ? 300 : at );
 

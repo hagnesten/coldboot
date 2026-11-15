@@ -369,7 +369,7 @@ namespace tests {
 		arp [ 41 ] = 77;
 		router->send ( arp, 42 );
 
-		uint8_t bootp [ 8 + 244 ] = { };
+		uint8_t bootp [ 8 + 252 ] = { };
 
 		set16 ( bootp, 68 );
 		set16 ( bootp + 2, 67 );
@@ -405,6 +405,23 @@ namespace tests {
 		const uint8_t* pong = catcher->wait ( 3, 2000 ) ? catcher->frames [ 2 ] : nullptr;
 
 		expect ( pong && pong [ 23 ] == 1 && pong [ 34 ] == 0 && get16 ( pong + 38 ) == 0x1234 && pong [ 42 ] == 'p' && net::fold ( net::sum_words ( pong + 34, 12, 0 ) ) == 0, "network: the NAT answers a ping to the gateway" );
+
+		catcher->count = 0;
+		request [ 242 ] = 3;
+		request [ 243 ] = 50;
+		request [ 244 ] = 4;
+		set32 ( request + 245, 0x0A000263 );
+		request [ 249 ] = 255;
+		router->send ( frame, guest_packet ( frame, 17, 0, 0xFFFFFFFFu, bootp, sizeof ( bootp ) ) );
+
+		const uint8_t* refusal = catcher->wait ( 1, 2000 ) ? catcher->frames [ 0 ] : nullptr;
+
+		set32 ( request + 245, net::nat::guest_address );
+		router->send ( frame, guest_packet ( frame, 17, 0, 0xFFFFFFFFu, bootp, sizeof ( bootp ) ) );
+
+		const uint8_t* granted = catcher->wait ( 2, 2000 ) ? catcher->frames [ 1 ] : nullptr;
+
+		expect ( refusal && refusal [ 42 + 242 ] == 6 && !get_be32 ( refusal + 42 + 16 ) && granted && granted [ 42 + 242 ] == 5 && get_be32 ( granted + 42 + 16 ) == net::nat::guest_address, "network: the NAT refuses a request for another address and grants its own" );
 
 		SOCKET listener = socket ( AF_INET, SOCK_STREAM, IPPROTO_TCP );
 		sockaddr_in place = { };
