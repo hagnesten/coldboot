@@ -29,6 +29,7 @@ namespace pc {
 
 		uint8_t address = 0;
 		uint8_t configuration = 0;
+		bool high_speed = false;
 
 	protected:
 

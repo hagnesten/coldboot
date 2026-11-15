@@ -9,6 +9,7 @@ namespace pc {
 		PORT_SUSPEND = 0x0004,
 		PORT_RESET = 0x0010,
 		PORT_POWER = 0x0100,
+		PORT_HIGH_SPEED = 0x0400,
 
 		FEATURE_ENABLE = 1,
 		FEATURE_SUSPEND = 2,
@@ -76,11 +77,46 @@ namespace pc {
 
 	int32_t usb_hub::descriptor ( uint8_t type, uint8_t index, uint8_t* reply, int32_t room ) {
 
-		if ( type == 0x01 )
-			return give ( hub_device, sizeof ( hub_device ), reply, room );
+		if ( type == 0x01 ) {
 
-		if ( type == 0x02 )
-			return give ( hub_configuration, sizeof ( hub_configuration ), reply, room );
+			uint8_t made [ sizeof ( hub_device ) ];
+
+			for ( uint32_t i = 0; i < sizeof ( made ); i++ )
+				made [ i ] = hub_device [ i ];
+
+			if ( high_speed ) {
+
+				made [ 2 ] = 0x00;
+				made [ 3 ] = 0x02;
+				made [ 6 ] = 0x01;
+
+			}
+
+			return give ( made, sizeof ( made ), reply, room );
+
+		}
+
+		if ( type == 0x02 ) {
+
+			uint8_t made [ sizeof ( hub_configuration ) ];
+
+			for ( uint32_t i = 0; i < sizeof ( made ); i++ )
+				made [ i ] = hub_configuration [ i ];
+
+			if ( high_speed )
+				made [ 24 ] = 12;
+
+			return give ( made, sizeof ( made ), reply, room );
+
+		}
+
+		if ( type == 0x06 && high_speed ) {
+
+			const uint8_t qualifier [ 10 ] = { 10, 0x06, 0x00, 0x02, 0x09, 0x00, 0x01, 64, 1, 0 };
+
+			return give ( qualifier, sizeof ( qualifier ), reply, room );
+
+		}
 
 		if ( type == 0x03 ) {
 
@@ -211,7 +247,8 @@ namespace pc {
 
 		if ( type == 0xA3 && code == 0x00 ) {
 
-			uint8_t state [ 4 ] = { static_cast < uint8_t > ( status [ port ] ), static_cast < uint8_t > ( status [ port ] >> 8 ), static_cast < uint8_t > ( change [ port ] ), static_cast < uint8_t > ( change [ port ] >> 8 ) };
+			uint16_t now = static_cast < uint16_t > ( status [ port ] | ( ( status [ port ] & PORT_CONNECTION ) && children [ port ] && children [ port ]->high_speed ? PORT_HIGH_SPEED : 0 ) );
+			uint8_t state [ 4 ] = { static_cast < uint8_t > ( now ), static_cast < uint8_t > ( now >> 8 ), static_cast < uint8_t > ( change [ port ] ), static_cast < uint8_t > ( change [ port ] >> 8 ) };
 
 			return give ( state, 4, reply, room );
 

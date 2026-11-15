@@ -12,6 +12,7 @@ namespace pc {
 		static constexpr uint32_t block_size = 512;
 		static constexpr uint32_t buffer_size = 65536;
 		static constexpr int32_t packet = 64;
+		static constexpr int32_t fast_packet = 512;
 
 		usb_storage ( );
 

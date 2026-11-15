@@ -124,11 +124,51 @@ namespace pc {
 
 	int32_t usb_storage::descriptor ( uint8_t type, uint8_t index, uint8_t* reply, int32_t room ) {
 
-		if ( type == 0x01 )
-			return give ( storage_device, sizeof ( storage_device ), reply, room );
+		if ( type == 0x01 ) {
 
-		if ( type == 0x02 )
-			return give ( storage_configuration, sizeof ( storage_configuration ), reply, room );
+			uint8_t made [ sizeof ( storage_device ) ];
+
+			for ( uint32_t i = 0; i < sizeof ( made ); i++ )
+				made [ i ] = storage_device [ i ];
+
+			if ( high_speed ) {
+
+				made [ 2 ] = 0x00;
+				made [ 3 ] = 0x02;
+
+			}
+
+			return give ( made, sizeof ( made ), reply, room );
+
+		}
+
+		if ( type == 0x02 ) {
+
+			uint8_t made [ sizeof ( storage_configuration ) ];
+
+			for ( uint32_t i = 0; i < sizeof ( made ); i++ )
+				made [ i ] = storage_configuration [ i ];
+
+			if ( high_speed ) {
+
+				made [ 22 ] = 0x00;
+				made [ 23 ] = 0x02;
+				made [ 29 ] = 0x00;
+				made [ 30 ] = 0x02;
+
+			}
+
+			return give ( made, sizeof ( made ), reply, room );
+
+		}
+
+		if ( type == 0x06 && high_speed ) {
+
+			const uint8_t qualifier [ 10 ] = { 10, 0x06, 0x00, 0x02, 0x00, 0x00, 0x00, 64, 1, 0 };
+
+			return give ( qualifier, sizeof ( qualifier ), reply, room );
+
+		}
 
 		if ( type == 0x03 ) {
 
@@ -380,7 +420,7 @@ namespace pc {
 			int32_t piece = static_cast < int32_t > ( length - cursor );
 
 			piece = piece < room ? piece : room;
-			piece = piece < packet ? piece : packet;
+			piece = piece < ( high_speed ? fast_packet : packet ) ? piece : ( high_speed ? fast_packet : packet );
 
 			for ( int32_t i = 0; i < piece; i++ )
 				out [ i ] = data [ cursor + i ];
