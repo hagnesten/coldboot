@@ -192,6 +192,9 @@
     <ClCompile Include="src\pc\e1000.cc">
       <Filter>src\pc</Filter>
     </ClCompile>
+    <ClCompile Include="src\pc\ehci.cc">
+      <Filter>src\pc</Filter>
+    </ClCompile>
     <ClCompile Include="src\pc\fat.cc">
       <Filter>src\pc</Filter>
     </ClCompile>
@@ -489,6 +492,9 @@
       <Filter>src\pc</Filter>
     </ClInclude>
     <ClInclude Include="src\pc\e1000.hh">
+      <Filter>src\pc</Filter>
+    </ClInclude>
+    <ClInclude Include="src\pc\ehci.hh">
       <Filter>src\pc</Filter>
     </ClInclude>
     <ClInclude Include="src\pc\fat.hh">

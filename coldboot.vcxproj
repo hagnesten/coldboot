@@ -73,6 +73,7 @@
     <ClCompile Include="src\pc\bios.cc" />
     <ClCompile Include="src\pc\computer.cc" />
     <ClCompile Include="src\pc\e1000.cc" />
+    <ClCompile Include="src\pc\ehci.cc" />
     <ClCompile Include="src\pc\fat.cc" />
     <ClCompile Include="src\pc\hda.cc" />
     <ClCompile Include="src\pc\ide.cc" />
@@ -174,6 +175,7 @@
     <ClInclude Include="src\pc\common.hh" />
     <ClInclude Include="src\pc\computer.hh" />
     <ClInclude Include="src\pc\e1000.hh" />
+    <ClInclude Include="src\pc\ehci.hh" />
     <ClInclude Include="src\pc\fat.hh" />
     <ClInclude Include="src\pc\hda.hh" />
     <ClInclude Include="src\pc\ide.hh" />
