@@ -4,6 +4,7 @@
 #include "pc/bios.hh"
 #include "pc/e1000.hh"
 #include "pc/hda.hh"
+#include "pc/ahci.hh"
 #include "pc/platform.hh"
 #include "pc/tools.hh"
 #include "pc/uefi.hh"
@@ -31,6 +32,7 @@ namespace pc {
 		wchar_t disk [ MAX_PATH ] = { };
 		wchar_t helper [ MAX_PATH ] = { };
 		wchar_t variables [ MAX_PATH ] = { };
+		wchar_t sata [ MAX_PATH ] = { };
 
 	};
 
@@ -105,12 +107,14 @@ namespace pc {
 		e1000* nic = nullptr;
 		net::nat* router = nullptr;
 		hda* sound = nullptr;
+		ahci* sata = nullptr;
 		sound_sink* speaker = nullptr;
 		bios* firmware = nullptr;
 		uefi* uefi_firmware = nullptr;
 		disk_file disc;
 		disk_file drive;
 		disk_file helper;
+		disk_file sata_drive;
 		guest_tools tools;
 
 	private:

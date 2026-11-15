@@ -145,10 +145,12 @@ namespace pc {
 		delete router;
 		delete nic;
 		delete sound;
+		delete sata;
 		tools.router = nullptr;
 		router = nullptr;
 		nic = nullptr;
 		sound = nullptr;
+		sata = nullptr;
 		delete firmware;
 		delete uefi_firmware;
 		delete storage;
@@ -232,6 +234,19 @@ namespace pc {
 		vm.attach_memory ( sound->memory_base, hda::memory_size, sound );
 		board->pci.attach ( 5, 0, sound );
 		board->add_ticker ( sound );
+
+		if ( options.sata [ 0 ] ) {
+
+			if ( !sata_drive.present ( ) && !sata_drive.open ( options.sata, true ) )
+				sata_drive.open ( options.sata, false );
+
+			sata = new ahci ( *board, vm, 18 );
+			sata->attach ( sata_drive.present ( ) ? &sata_drive : nullptr );
+			vm.attach_memory ( sata->memory_base, ahci::memory_size, sata );
+			board->pci.attach ( 6, 0, sata );
+
+		}
+
 		video->map ( );
 
 		if ( !disc.present ( ) && options.iso [ 0 ] )
