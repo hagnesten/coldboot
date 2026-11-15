@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
+    <Filter Include="assets">
+      <UniqueIdentifier>{E2C5A817-49D3-5B6E-8F20-A7C1D3E5B984}</UniqueIdentifier>
+    </Filter>
     <Filter Include="src">
       <UniqueIdentifier>{062528C0-0E85-5174-BDBB-AF677DA1ED48}</UniqueIdentifier>
     </Filter>
@@ -34,6 +37,9 @@
     <Filter Include="src\machine">
       <UniqueIdentifier>{FB5B6353-8465-5649-9770-C1EBFE1315CA}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\net">
+      <UniqueIdentifier>{625AC69C-1532-BD56-2CC0-A467ECE23046}</UniqueIdentifier>
+    </Filter>
     <Filter Include="src\pc">
       <UniqueIdentifier>{8A4D2E61-7C3B-5F09-B1E8-2D6C9F4A7E35}</UniqueIdentifier>
     </Filter>
@@ -61,58 +67,567 @@
     <Filter Include="src\vm">
       <UniqueIdentifier>{5E1B7C93-2A64-5D80-9F3E-B47A16C0D258}</UniqueIdentifier>
     </Filter>
-    <Filter Include="assets">
-      <UniqueIdentifier>{E2C5A817-49D3-5B6E-8F20-A7C1D3E5B984}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\app\*.cc"><Filter>src\app</Filter></ClCompile>
-    <ClCompile Include="src\assembler\*.cc"><Filter>src\assembler</Filter></ClCompile>
-    <ClCompile Include="src\base\*.cc"><Filter>src\base</Filter></ClCompile>
-    <ClCompile Include="src\bus\*.cc"><Filter>src\bus</Filter></ClCompile>
-    <ClCompile Include="src\chipset\*.cc"><Filter>src\chipset</Filter></ClCompile>
-    <ClCompile Include="src\cpu\*.cc"><Filter>src\cpu</Filter></ClCompile>
-    <ClCompile Include="src\firmware\*.cc"><Filter>src\firmware</Filter></ClCompile>
-    <ClCompile Include="src\hv\*.cc"><Filter>src\hv</Filter></ClCompile>
-    <ClCompile Include="src\input\*.cc"><Filter>src\input</Filter></ClCompile>
-    <ClCompile Include="src\machine\*.cc"><Filter>src\machine</Filter></ClCompile>
-    <ClCompile Include="src\pc\*.cc"><Filter>src\pc</Filter></ClCompile>
-    <ClCompile Include="src\render\*.cc"><Filter>src\render</Filter></ClCompile>
-    <ClCompile Include="src\runtime\*.cc"><Filter>src\runtime</Filter></ClCompile>
-    <ClCompile Include="src\storage\*.cc"><Filter>src\storage</Filter></ClCompile>
-    <ClCompile Include="src\tests\*.cc"><Filter>src\tests</Filter></ClCompile>
-    <ClCompile Include="src\ui\*.cc"><Filter>src\ui</Filter></ClCompile>
-    <ClCompile Include="src\video\*.cc"><Filter>src\video</Filter></ClCompile>
-    <ClCompile Include="src\vm\*.cc"><Filter>src\vm</Filter></ClCompile>
+    <ClCompile Include="src\app\agent.cc">
+      <Filter>src\app</Filter>
+    </ClCompile>
+    <ClCompile Include="src\app\audio.cc">
+      <Filter>src\app</Filter>
+    </ClCompile>
+    <ClCompile Include="src\app\clipboard.cc">
+      <Filter>src\app</Filter>
+    </ClCompile>
+    <ClCompile Include="src\app\computer.cc">
+      <Filter>src\app</Filter>
+    </ClCompile>
+    <ClCompile Include="src\app\dialogs.cc">
+      <Filter>src\app</Filter>
+    </ClCompile>
+    <ClCompile Include="src\app\keys.cc">
+      <Filter>src\app</Filter>
+    </ClCompile>
+    <ClCompile Include="src\app\main.cc">
+      <Filter>src\app</Filter>
+    </ClCompile>
+    <ClCompile Include="src\app\manager.cc">
+      <Filter>src\app</Filter>
+    </ClCompile>
+    <ClCompile Include="src\app\session.cc">
+      <Filter>src\app</Filter>
+    </ClCompile>
+    <ClCompile Include="src\app\settings.cc">
+      <Filter>src\app</Filter>
+    </ClCompile>
+    <ClCompile Include="src\assembler\assembler.cc">
+      <Filter>src\assembler</Filter>
+    </ClCompile>
+    <ClCompile Include="src\assembler\encode.cc">
+      <Filter>src\assembler</Filter>
+    </ClCompile>
+    <ClCompile Include="src\base\base.cc">
+      <Filter>src\base</Filter>
+    </ClCompile>
+    <ClCompile Include="src\base\files.cc">
+      <Filter>src\base</Filter>
+    </ClCompile>
+    <ClCompile Include="src\base\gif.cc">
+      <Filter>src\base</Filter>
+    </ClCompile>
+    <ClCompile Include="src\base\inflate.cc">
+      <Filter>src\base</Filter>
+    </ClCompile>
+    <ClCompile Include="src\base\math.cc">
+      <Filter>src\base</Filter>
+    </ClCompile>
+    <ClCompile Include="src\base\png.cc">
+      <Filter>src\base</Filter>
+    </ClCompile>
+    <ClCompile Include="src\bus\bus.cc">
+      <Filter>src\bus</Filter>
+    </ClCompile>
+    <ClCompile Include="src\chipset\dma.cc">
+      <Filter>src\chipset</Filter>
+    </ClCompile>
+    <ClCompile Include="src\chipset\pic.cc">
+      <Filter>src\chipset</Filter>
+    </ClCompile>
+    <ClCompile Include="src\chipset\pit.cc">
+      <Filter>src\chipset</Filter>
+    </ClCompile>
+    <ClCompile Include="src\chipset\ppi.cc">
+      <Filter>src\chipset</Filter>
+    </ClCompile>
+    <ClCompile Include="src\cpu\cpu.cc">
+      <Filter>src\cpu</Filter>
+    </ClCompile>
+    <ClCompile Include="src\cpu\execute.cc">
+      <Filter>src\cpu</Filter>
+    </ClCompile>
+    <ClCompile Include="src\firmware\firmware.cc">
+      <Filter>src\firmware</Filter>
+    </ClCompile>
+    <ClCompile Include="src\hv\emulator.cc">
+      <Filter>src\hv</Filter>
+    </ClCompile>
+    <ClCompile Include="src\hv\machine.cc">
+      <Filter>src\hv</Filter>
+    </ClCompile>
+    <ClCompile Include="src\hv\paging.cc">
+      <Filter>src\hv</Filter>
+    </ClCompile>
+    <ClCompile Include="src\hv\platform.cc">
+      <Filter>src\hv</Filter>
+    </ClCompile>
+    <ClCompile Include="src\input\keyboard.cc">
+      <Filter>src\input</Filter>
+    </ClCompile>
+    <ClCompile Include="src\machine\archive.cc">
+      <Filter>src\machine</Filter>
+    </ClCompile>
+    <ClCompile Include="src\machine\xt.cc">
+      <Filter>src\machine</Filter>
+    </ClCompile>
+    <ClCompile Include="src\net\link.cc">
+      <Filter>src\net</Filter>
+    </ClCompile>
+    <ClCompile Include="src\net\nat.cc">
+      <Filter>src\net</Filter>
+    </ClCompile>
+    <ClCompile Include="src\pc\acpi.cc">
+      <Filter>src\pc</Filter>
+    </ClCompile>
+    <ClCompile Include="src\pc\ahci.cc">
+      <Filter>src\pc</Filter>
+    </ClCompile>
+    <ClCompile Include="src\pc\aml.cc">
+      <Filter>src\pc</Filter>
+    </ClCompile>
+    <ClCompile Include="src\pc\bios.cc">
+      <Filter>src\pc</Filter>
+    </ClCompile>
+    <ClCompile Include="src\pc\computer.cc">
+      <Filter>src\pc</Filter>
+    </ClCompile>
+    <ClCompile Include="src\pc\e1000.cc">
+      <Filter>src\pc</Filter>
+    </ClCompile>
+    <ClCompile Include="src\pc\fat.cc">
+      <Filter>src\pc</Filter>
+    </ClCompile>
+    <ClCompile Include="src\pc\hda.cc">
+      <Filter>src\pc</Filter>
+    </ClCompile>
+    <ClCompile Include="src\pc\ide.cc">
+      <Filter>src\pc</Filter>
+    </ClCompile>
+    <ClCompile Include="src\pc\ioapic.cc">
+      <Filter>src\pc</Filter>
+    </ClCompile>
+    <ClCompile Include="src\pc\iso.cc">
+      <Filter>src\pc</Filter>
+    </ClCompile>
+    <ClCompile Include="src\pc\keyboard.cc">
+      <Filter>src\pc</Filter>
+    </ClCompile>
+    <ClCompile Include="src\pc\legacy.cc">
+      <Filter>src\pc</Filter>
+    </ClCompile>
+    <ClCompile Include="src\pc\nvme.cc">
+      <Filter>src\pc</Filter>
+    </ClCompile>
+    <ClCompile Include="src\pc\pci.cc">
+      <Filter>src\pc</Filter>
+    </ClCompile>
+    <ClCompile Include="src\pc\pe.cc">
+      <Filter>src\pc</Filter>
+    </ClCompile>
+    <ClCompile Include="src\pc\peripherals.cc">
+      <Filter>src\pc</Filter>
+    </ClCompile>
+    <ClCompile Include="src\pc\platform.cc">
+      <Filter>src\pc</Filter>
+    </ClCompile>
+    <ClCompile Include="src\pc\smbios.cc">
+      <Filter>src\pc</Filter>
+    </ClCompile>
+    <ClCompile Include="src\pc\storage.cc">
+      <Filter>src\pc</Filter>
+    </ClCompile>
+    <ClCompile Include="src\pc\tools.cc">
+      <Filter>src\pc</Filter>
+    </ClCompile>
+    <ClCompile Include="src\pc\uefi.cc">
+      <Filter>src\pc</Filter>
+    </ClCompile>
+    <ClCompile Include="src\pc\uefi_devices.cc">
+      <Filter>src\pc</Filter>
+    </ClCompile>
+    <ClCompile Include="src\pc\uefi_services.cc">
+      <Filter>src\pc</Filter>
+    </ClCompile>
+    <ClCompile Include="src\pc\uhci.cc">
+      <Filter>src\pc</Filter>
+    </ClCompile>
+    <ClCompile Include="src\pc\usb.cc">
+      <Filter>src\pc</Filter>
+    </ClCompile>
+    <ClCompile Include="src\pc\vga.cc">
+      <Filter>src\pc</Filter>
+    </ClCompile>
+    <ClCompile Include="src\render\gpu.cc">
+      <Filter>src\render</Filter>
+    </ClCompile>
+    <ClCompile Include="src\render\icons.cc">
+      <Filter>src\render</Filter>
+    </ClCompile>
+    <ClCompile Include="src\runtime\common.cc">
+      <Filter>src\runtime</Filter>
+    </ClCompile>
+    <ClCompile Include="src\runtime\memory.cc">
+      <Filter>src\runtime</Filter>
+    </ClCompile>
+    <ClCompile Include="src\runtime\rounding.cc">
+      <Filter>src\runtime</Filter>
+    </ClCompile>
+    <ClCompile Include="src\runtime\startup.cc">
+      <Filter>src\runtime</Filter>
+    </ClCompile>
+    <ClCompile Include="src\storage\blank.cc">
+      <Filter>src\storage</Filter>
+    </ClCompile>
+    <ClCompile Include="src\storage\fdc.cc">
+      <Filter>src\storage</Filter>
+    </ClCompile>
+    <ClCompile Include="src\storage\floppy.cc">
+      <Filter>src\storage</Filter>
+    </ClCompile>
+    <ClCompile Include="src\storage\program.cc">
+      <Filter>src\storage</Filter>
+    </ClCompile>
+    <ClCompile Include="src\tests\bios.cc">
+      <Filter>src\tests</Filter>
+    </ClCompile>
+    <ClCompile Include="src\tests\capture.cc">
+      <Filter>src\tests</Filter>
+    </ClCompile>
+    <ClCompile Include="src\tests\chipset.cc">
+      <Filter>src\tests</Filter>
+    </ClCompile>
+    <ClCompile Include="src\tests\computer.cc">
+      <Filter>src\tests</Filter>
+    </ClCompile>
+    <ClCompile Include="src\tests\devices.cc">
+      <Filter>src\tests</Filter>
+    </ClCompile>
+    <ClCompile Include="src\tests\emulation.cc">
+      <Filter>src\tests</Filter>
+    </ClCompile>
+    <ClCompile Include="src\tests\encoding.cc">
+      <Filter>src\tests</Filter>
+    </ClCompile>
+    <ClCompile Include="src\tests\entry.cc">
+      <Filter>src\tests</Filter>
+    </ClCompile>
+    <ClCompile Include="src\tests\foundation.cc">
+      <Filter>src\tests</Filter>
+    </ClCompile>
+    <ClCompile Include="src\tests\harness.cc">
+      <Filter>src\tests</Filter>
+    </ClCompile>
+    <ClCompile Include="src\tests\hypervisor.cc">
+      <Filter>src\tests</Filter>
+    </ClCompile>
+    <ClCompile Include="src\tests\machines.cc">
+      <Filter>src\tests</Filter>
+    </ClCompile>
+    <ClCompile Include="src\tests\modern.cc">
+      <Filter>src\tests</Filter>
+    </ClCompile>
+    <ClCompile Include="src\tests\network.cc">
+      <Filter>src\tests</Filter>
+    </ClCompile>
+    <ClCompile Include="src\tests\single_step.cc">
+      <Filter>src\tests</Filter>
+    </ClCompile>
+    <ClCompile Include="src\tests\storage.cc">
+      <Filter>src\tests</Filter>
+    </ClCompile>
+    <ClCompile Include="src\tests\uefi.cc">
+      <Filter>src\tests</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ui\console.cc">
+      <Filter>src\ui</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ui\manager.cc">
+      <Filter>src\ui</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ui\panels.cc">
+      <Filter>src\ui</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ui\shell.cc">
+      <Filter>src\ui</Filter>
+    </ClCompile>
+    <ClCompile Include="src\video\cga.cc">
+      <Filter>src\video</Filter>
+    </ClCompile>
+    <ClCompile Include="src\video\font.cc">
+      <Filter>src\video</Filter>
+    </ClCompile>
+    <ClCompile Include="src\vm\config.cc">
+      <Filter>src\vm</Filter>
+    </ClCompile>
+    <ClCompile Include="src\vm\library.cc">
+      <Filter>src\vm</Filter>
+    </ClCompile>
+    <ClCompile Include="src\vm\unattend.cc">
+      <Filter>src\vm</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\app\*.hh"><Filter>src\app</Filter></ClInclude>
-    <ClInclude Include="src\assembler\*.hh"><Filter>src\assembler</Filter></ClInclude>
-    <ClInclude Include="src\base\*.hh"><Filter>src\base</Filter></ClInclude>
-    <ClInclude Include="src\bus\*.hh"><Filter>src\bus</Filter></ClInclude>
-    <ClInclude Include="src\chipset\*.hh"><Filter>src\chipset</Filter></ClInclude>
-    <ClInclude Include="src\cpu\*.hh"><Filter>src\cpu</Filter></ClInclude>
-    <ClInclude Include="src\firmware\*.hh"><Filter>src\firmware</Filter></ClInclude>
-    <ClInclude Include="src\hv\*.hh"><Filter>src\hv</Filter></ClInclude>
-    <ClInclude Include="src\input\*.hh"><Filter>src\input</Filter></ClInclude>
-    <ClInclude Include="src\machine\*.hh"><Filter>src\machine</Filter></ClInclude>
-    <ClInclude Include="src\pc\*.hh"><Filter>src\pc</Filter></ClInclude>
-    <ClInclude Include="src\render\*.hh"><Filter>src\render</Filter></ClInclude>
-    <ClInclude Include="src\runtime\*.hh"><Filter>src\runtime</Filter></ClInclude>
-    <ClInclude Include="src\storage\*.hh"><Filter>src\storage</Filter></ClInclude>
-    <ClInclude Include="src\tests\*.hh"><Filter>src\tests</Filter></ClInclude>
-    <ClInclude Include="src\ui\*.hh"><Filter>src\ui</Filter></ClInclude>
-    <ClInclude Include="src\video\*.hh"><Filter>src\video</Filter></ClInclude>
-    <ClInclude Include="src\vm\*.hh"><Filter>src\vm</Filter></ClInclude>
+    <ClInclude Include="src\app\audio.hh">
+      <Filter>src\app</Filter>
+    </ClInclude>
+    <ClInclude Include="src\app\clipboard.hh">
+      <Filter>src\app</Filter>
+    </ClInclude>
+    <ClInclude Include="src\app\dialogs.hh">
+      <Filter>src\app</Filter>
+    </ClInclude>
+    <ClInclude Include="src\app\keys.hh">
+      <Filter>src\app</Filter>
+    </ClInclude>
+    <ClInclude Include="src\app\session.hh">
+      <Filter>src\app</Filter>
+    </ClInclude>
+    <ClInclude Include="src\app\settings.hh">
+      <Filter>src\app</Filter>
+    </ClInclude>
+    <ClInclude Include="src\assembler\assembler.hh">
+      <Filter>src\assembler</Filter>
+    </ClInclude>
+    <ClInclude Include="src\assembler\internal.hh">
+      <Filter>src\assembler</Filter>
+    </ClInclude>
+    <ClInclude Include="src\base\base.hh">
+      <Filter>src\base</Filter>
+    </ClInclude>
+    <ClInclude Include="src\base\files.hh">
+      <Filter>src\base</Filter>
+    </ClInclude>
+    <ClInclude Include="src\base\gif.hh">
+      <Filter>src\base</Filter>
+    </ClInclude>
+    <ClInclude Include="src\base\inflate.hh">
+      <Filter>src\base</Filter>
+    </ClInclude>
+    <ClInclude Include="src\base\math.hh">
+      <Filter>src\base</Filter>
+    </ClInclude>
+    <ClInclude Include="src\base\png.hh">
+      <Filter>src\base</Filter>
+    </ClInclude>
+    <ClInclude Include="src\bus\bus.hh">
+      <Filter>src\bus</Filter>
+    </ClInclude>
+    <ClInclude Include="src\chipset\dma.hh">
+      <Filter>src\chipset</Filter>
+    </ClInclude>
+    <ClInclude Include="src\chipset\pic.hh">
+      <Filter>src\chipset</Filter>
+    </ClInclude>
+    <ClInclude Include="src\chipset\pit.hh">
+      <Filter>src\chipset</Filter>
+    </ClInclude>
+    <ClInclude Include="src\chipset\ppi.hh">
+      <Filter>src\chipset</Filter>
+    </ClInclude>
+    <ClInclude Include="src\cpu\cpu.hh">
+      <Filter>src\cpu</Filter>
+    </ClInclude>
+    <ClInclude Include="src\cpu\registers.hh">
+      <Filter>src\cpu</Filter>
+    </ClInclude>
+    <ClInclude Include="src\firmware\firmware.hh">
+      <Filter>src\firmware</Filter>
+    </ClInclude>
+    <ClInclude Include="src\hv\emulator.hh">
+      <Filter>src\hv</Filter>
+    </ClInclude>
+    <ClInclude Include="src\hv\machine.hh">
+      <Filter>src\hv</Filter>
+    </ClInclude>
+    <ClInclude Include="src\hv\paging.hh">
+      <Filter>src\hv</Filter>
+    </ClInclude>
+    <ClInclude Include="src\hv\platform.hh">
+      <Filter>src\hv</Filter>
+    </ClInclude>
+    <ClInclude Include="src\hv\state.hh">
+      <Filter>src\hv</Filter>
+    </ClInclude>
+    <ClInclude Include="src\input\keyboard.hh">
+      <Filter>src\input</Filter>
+    </ClInclude>
+    <ClInclude Include="src\machine\archive.hh">
+      <Filter>src\machine</Filter>
+    </ClInclude>
+    <ClInclude Include="src\machine\xt.hh">
+      <Filter>src\machine</Filter>
+    </ClInclude>
+    <ClInclude Include="src\net\link.hh">
+      <Filter>src\net</Filter>
+    </ClInclude>
+    <ClInclude Include="src\net\nat.hh">
+      <Filter>src\net</Filter>
+    </ClInclude>
+    <ClInclude Include="src\pc\acpi.hh">
+      <Filter>src\pc</Filter>
+    </ClInclude>
+    <ClInclude Include="src\pc\ahci.hh">
+      <Filter>src\pc</Filter>
+    </ClInclude>
+    <ClInclude Include="src\pc\aml.hh">
+      <Filter>src\pc</Filter>
+    </ClInclude>
+    <ClInclude Include="src\pc\bios.hh">
+      <Filter>src\pc</Filter>
+    </ClInclude>
+    <ClInclude Include="src\pc\common.hh">
+      <Filter>src\pc</Filter>
+    </ClInclude>
+    <ClInclude Include="src\pc\computer.hh">
+      <Filter>src\pc</Filter>
+    </ClInclude>
+    <ClInclude Include="src\pc\e1000.hh">
+      <Filter>src\pc</Filter>
+    </ClInclude>
+    <ClInclude Include="src\pc\fat.hh">
+      <Filter>src\pc</Filter>
+    </ClInclude>
+    <ClInclude Include="src\pc\hda.hh">
+      <Filter>src\pc</Filter>
+    </ClInclude>
+    <ClInclude Include="src\pc\ide.hh">
+      <Filter>src\pc</Filter>
+    </ClInclude>
+    <ClInclude Include="src\pc\ioapic.hh">
+      <Filter>src\pc</Filter>
+    </ClInclude>
+    <ClInclude Include="src\pc\iso.hh">
+      <Filter>src\pc</Filter>
+    </ClInclude>
+    <ClInclude Include="src\pc\keyboard.hh">
+      <Filter>src\pc</Filter>
+    </ClInclude>
+    <ClInclude Include="src\pc\legacy.hh">
+      <Filter>src\pc</Filter>
+    </ClInclude>
+    <ClInclude Include="src\pc\nvme.hh">
+      <Filter>src\pc</Filter>
+    </ClInclude>
+    <ClInclude Include="src\pc\pci.hh">
+      <Filter>src\pc</Filter>
+    </ClInclude>
+    <ClInclude Include="src\pc\pe.hh">
+      <Filter>src\pc</Filter>
+    </ClInclude>
+    <ClInclude Include="src\pc\peripherals.hh">
+      <Filter>src\pc</Filter>
+    </ClInclude>
+    <ClInclude Include="src\pc\platform.hh">
+      <Filter>src\pc</Filter>
+    </ClInclude>
+    <ClInclude Include="src\pc\smbios.hh">
+      <Filter>src\pc</Filter>
+    </ClInclude>
+    <ClInclude Include="src\pc\storage.hh">
+      <Filter>src\pc</Filter>
+    </ClInclude>
+    <ClInclude Include="src\pc\tools.hh">
+      <Filter>src\pc</Filter>
+    </ClInclude>
+    <ClInclude Include="src\pc\uefi.hh">
+      <Filter>src\pc</Filter>
+    </ClInclude>
+    <ClInclude Include="src\pc\uefi_parts.hh">
+      <Filter>src\pc</Filter>
+    </ClInclude>
+    <ClInclude Include="src\pc\uhci.hh">
+      <Filter>src\pc</Filter>
+    </ClInclude>
+    <ClInclude Include="src\pc\usb.hh">
+      <Filter>src\pc</Filter>
+    </ClInclude>
+    <ClInclude Include="src\pc\vga.hh">
+      <Filter>src\pc</Filter>
+    </ClInclude>
+    <ClInclude Include="src\render\gpu.hh">
+      <Filter>src\render</Filter>
+    </ClInclude>
+    <ClInclude Include="src\runtime\runtime.hh">
+      <Filter>src\runtime</Filter>
+    </ClInclude>
+    <ClInclude Include="src\storage\blank.hh">
+      <Filter>src\storage</Filter>
+    </ClInclude>
+    <ClInclude Include="src\storage\fdc.hh">
+      <Filter>src\storage</Filter>
+    </ClInclude>
+    <ClInclude Include="src\storage\floppy.hh">
+      <Filter>src\storage</Filter>
+    </ClInclude>
+    <ClInclude Include="src\storage\program.hh">
+      <Filter>src\storage</Filter>
+    </ClInclude>
+    <ClInclude Include="src\tests\harness.hh">
+      <Filter>src\tests</Filter>
+    </ClInclude>
+    <ClInclude Include="src\tests\program.hh">
+      <Filter>src\tests</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ui\console.hh">
+      <Filter>src\ui</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ui\manager.hh">
+      <Filter>src\ui</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ui\shell.hh">
+      <Filter>src\ui</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ui\theme.hh">
+      <Filter>src\ui</Filter>
+    </ClInclude>
+    <ClInclude Include="src\video\cga.hh">
+      <Filter>src\video</Filter>
+    </ClInclude>
+    <ClInclude Include="src\vm\config.hh">
+      <Filter>src\vm</Filter>
+    </ClInclude>
+    <ClInclude Include="src\vm\library.hh">
+      <Filter>src\vm</Filter>
+    </ClInclude>
+    <ClInclude Include="src\vm\unattend.hh">
+      <Filter>src\vm</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="src\render\shaders\*.hlsl"><Filter>src\render\shaders</Filter></FxCompile>
+    <FxCompile Include="src\render\shaders\screen_vs.hlslsrc\render\shaders\screen_ps.hlsl">
+      <Filter>src\render\shaders\screen_vs.hlslsrc\render\shaders</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="src\firmware\*.asm"><Filter>src\firmware</Filter></None>
-    <None Include="assets\coldboot.manifest"><Filter>assets</Filter></None>
+    <None Include="src\firmware\disk.asm">
+      <Filter>src\firmware</Filter>
+    </None>
+    <None Include="src\firmware\fixed.asm">
+      <Filter>src\firmware</Filter>
+    </None>
+    <None Include="src\firmware\keyboard.asm">
+      <Filter>src\firmware</Filter>
+    </None>
+    <None Include="src\firmware\layout.asm">
+      <Filter>src\firmware</Filter>
+    </None>
+    <None Include="src\firmware\modern.asm">
+      <Filter>src\firmware</Filter>
+    </None>
+    <None Include="src\firmware\post.asm">
+      <Filter>src\firmware</Filter>
+    </None>
+    <None Include="src\firmware\services.asm">
+      <Filter>src\firmware</Filter>
+    </None>
+    <None Include="src\firmware\video.asm">
+      <Filter>src\firmware</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="assets\coldboot.rc"><Filter>assets</Filter></ResourceCompile>
+    <None Include="assets\coldboot.manifest">
+      <Filter>assets</Filter>
+    </None>
+    <ResourceCompile Include="assets\coldboot.rc">
+      <Filter>assets</Filter>
+    </ResourceCompile>
   </ItemGroup>
 </Project>
