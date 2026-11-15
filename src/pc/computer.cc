@@ -258,6 +258,7 @@ namespace pc {
 			flash->attach ( flash_drive.present ( ) ? &flash_drive : nullptr );
 			vm.attach_memory ( flash->memory_base, nvme::memory_size, flash );
 			board->pci.attach ( 7, 0, flash );
+			board->add_ticker ( flash );
 
 		}
 

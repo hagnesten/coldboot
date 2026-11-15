@@ -146,6 +146,7 @@ namespace pc {
 
 		status = 0;
 		masked = 0;
+		rung = 0;
 		granted = queue_count - 1;
 		update_line ( );
 
@@ -361,7 +362,26 @@ namespace pc {
 			return;
 
 		work.tail = value;
-		run_queue ( queue );
+
+		if ( queue )
+			rung |= 1u << queue;
+		else
+			run_queue ( queue );
+
+	}
+
+	void nvme::advance ( uint64_t ) {
+
+		uint32_t waiting = rung;
+
+		rung = 0;
+
+		for ( uint32_t queue = 1; waiting && queue < queue_count; queue++ ) {
+
+			if ( waiting & 1u << queue )
+				run_queue ( queue );
+
+		}
 
 	}
 

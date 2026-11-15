@@ -6,7 +6,7 @@
 
 namespace pc {
 
-	class nvme : public hv::device, public pci_function {
+	class nvme : public hv::device, public pci_function, public ticking {
 
 	public:
 
@@ -34,6 +34,8 @@ namespace pc {
 		void write ( uint64_t address, uint32_t size, uint64_t value ) override;
 
 		void written ( uint32_t offset ) override;
+
+		void advance ( uint64_t now ) override;
 
 		uint32_t memory_base = default_memory;
 		uint32_t commands_run = 0;
@@ -110,6 +112,7 @@ namespace pc {
 		uint64_t admin_completion = 0;
 		uint32_t masked = 0;
 		uint32_t granted = queue_count - 1;
+		uint32_t rung = 0;
 		submission submissions [ queue_count ];
 		completion completions [ queue_count ];
 		uint8_t* buffer = nullptr;
