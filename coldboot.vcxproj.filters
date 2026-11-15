@@ -261,6 +261,9 @@
     <ClCompile Include="src\pc\vga.cc">
       <Filter>src\pc</Filter>
     </ClCompile>
+    <ClCompile Include="src\pc\xhci.cc">
+      <Filter>src\pc</Filter>
+    </ClCompile>
     <ClCompile Include="src\render\gpu.cc">
       <Filter>src\render</Filter>
     </ClCompile>
@@ -552,6 +555,9 @@
       <Filter>src\pc</Filter>
     </ClInclude>
     <ClInclude Include="src\pc\vga.hh">
+      <Filter>src\pc</Filter>
+    </ClInclude>
+    <ClInclude Include="src\pc\xhci.hh">
       <Filter>src\pc</Filter>
     </ClInclude>
     <ClInclude Include="src\render\gpu.hh">
