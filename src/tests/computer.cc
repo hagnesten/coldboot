@@ -622,6 +622,10 @@ namespace tests {
 
 				options->xhci = true;
 
+			} else if ( base::same_text ( arguments [ i ], L"--ehci" ) ) {
+
+				options->ehci = true;
+
 			} else if ( base::same_text ( arguments [ i ], L"--nvme" ) ) {
 
 				const wchar_t* path = next ( );

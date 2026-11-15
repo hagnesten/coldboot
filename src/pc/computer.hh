@@ -5,6 +5,7 @@
 #include "pc/e1000.hh"
 #include "pc/hda.hh"
 #include "pc/ahci.hh"
+#include "pc/ehci.hh"
 #include "pc/nvme.hh"
 #include "pc/usb_hub.hh"
 #include "pc/usb_storage.hh"
@@ -32,6 +33,7 @@ namespace pc {
 		bool fresh_identity = false;
 		bool disposable = false;
 		bool xhci = false;
+		bool ehci = false;
 		char proxy [ 128 ] = { };
 		wchar_t iso [ MAX_PATH ] = { };
 		wchar_t disk [ MAX_PATH ] = { };
@@ -118,6 +120,7 @@ namespace pc {
 		nvme* flash = nullptr;
 		usb_hub* hub = nullptr;
 		xhci* fast_usb = nullptr;
+		ehci* high_usb = nullptr;
 		usb_storage* stick = nullptr;
 		sound_sink* speaker = nullptr;
 		bios* firmware = nullptr;

@@ -149,9 +149,11 @@ namespace pc {
 		delete flash;
 		flash = nullptr;
 		delete fast_usb;
+		delete high_usb;
 		delete stick;
 		delete hub;
 		fast_usb = nullptr;
+		high_usb = nullptr;
 		stick = nullptr;
 		hub = nullptr;
 		tools.router = nullptr;
@@ -247,8 +249,27 @@ namespace pc {
 			stick->attach ( stick_drive.present ( ) ? &stick_drive : nullptr );
 			hub->plug ( 0, stick );
 
-			if ( !options.xhci )
+			if ( options.ehci && !options.xhci ) {
+
+				hub->high_speed = true;
+				stick->high_speed = true;
+
+			}
+
+			if ( !options.xhci && !options.ehci )
 				usb->plug ( 1, hub );
+
+		}
+
+		if ( options.ehci ) {
+
+			high_usb = new ehci ( *board, vm, 22 );
+			vm.attach_memory ( high_usb->memory_base, ehci::memory_size, high_usb );
+			board->pci.attach ( 9, 0, high_usb );
+			board->add_ticker ( high_usb );
+
+			if ( hub && !options.xhci )
+				high_usb->plug ( 0, hub );
 
 		}
 
