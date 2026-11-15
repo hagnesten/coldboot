@@ -6,6 +6,8 @@
 #include "pc/hda.hh"
 #include "pc/ahci.hh"
 #include "pc/nvme.hh"
+#include "pc/usb_hub.hh"
+#include "pc/usb_storage.hh"
 #include "pc/platform.hh"
 #include "pc/tools.hh"
 #include "pc/uefi.hh"
@@ -35,6 +37,7 @@ namespace pc {
 		wchar_t variables [ MAX_PATH ] = { };
 		wchar_t sata [ MAX_PATH ] = { };
 		wchar_t nvme [ MAX_PATH ] = { };
+		wchar_t usb_disk [ MAX_PATH ] = { };
 
 	};
 
@@ -111,6 +114,8 @@ namespace pc {
 		hda* sound = nullptr;
 		ahci* sata = nullptr;
 		nvme* flash = nullptr;
+		usb_hub* hub = nullptr;
+		usb_storage* stick = nullptr;
 		sound_sink* speaker = nullptr;
 		bios* firmware = nullptr;
 		uefi* uefi_firmware = nullptr;
@@ -119,6 +124,7 @@ namespace pc {
 		disk_file helper;
 		disk_file sata_drive;
 		disk_file flash_drive;
+		disk_file stick_drive;
 		guest_tools tools;
 
 	private:

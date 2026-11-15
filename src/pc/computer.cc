@@ -148,6 +148,10 @@ namespace pc {
 		delete sata;
 		delete flash;
 		flash = nullptr;
+		delete stick;
+		delete hub;
+		stick = nullptr;
+		hub = nullptr;
 		tools.router = nullptr;
 		router = nullptr;
 		nic = nullptr;
@@ -230,6 +234,19 @@ namespace pc {
 		board->pci.attach ( 1, 2, usb );
 		board->pci.attach ( 2, 0, video );
 		usb->plug ( 0, tablet );
+
+		if ( options.usb_disk [ 0 ] ) {
+
+			if ( !stick_drive.present ( ) && !stick_drive.open ( options.usb_disk, true ) )
+				stick_drive.open ( options.usb_disk, false );
+
+			hub = new usb_hub ( );
+			stick = new usb_storage ( );
+			stick->attach ( stick_drive.present ( ) ? &stick_drive : nullptr );
+			hub->plug ( 0, stick );
+			usb->plug ( 1, hub );
+
+		}
 		board->add_ticker ( usb );
 		sound = new hda ( *board, vm, 17 );
 		sound->connect ( speaker );

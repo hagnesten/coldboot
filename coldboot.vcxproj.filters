@@ -252,6 +252,12 @@
     <ClCompile Include="src\pc\usb.cc">
       <Filter>src\pc</Filter>
     </ClCompile>
+    <ClCompile Include="src\pc\usb_hub.cc">
+      <Filter>src\pc</Filter>
+    </ClCompile>
+    <ClCompile Include="src\pc\usb_storage.cc">
+      <Filter>src\pc</Filter>
+    </ClCompile>
     <ClCompile Include="src\pc\vga.cc">
       <Filter>src\pc</Filter>
     </ClCompile>
@@ -537,6 +543,12 @@
       <Filter>src\pc</Filter>
     </ClInclude>
     <ClInclude Include="src\pc\usb.hh">
+      <Filter>src\pc</Filter>
+    </ClInclude>
+    <ClInclude Include="src\pc\usb_hub.hh">
+      <Filter>src\pc</Filter>
+    </ClInclude>
+    <ClInclude Include="src\pc\usb_storage.hh">
       <Filter>src\pc</Filter>
     </ClInclude>
     <ClInclude Include="src\pc\vga.hh">

@@ -93,6 +93,8 @@
     <ClCompile Include="src\pc\uefi_services.cc" />
     <ClCompile Include="src\pc\uhci.cc" />
     <ClCompile Include="src\pc\usb.cc" />
+    <ClCompile Include="src\pc\usb_hub.cc" />
+    <ClCompile Include="src\pc\usb_storage.cc" />
     <ClCompile Include="src\pc\vga.cc" />
     <ClCompile Include="src\render\gpu.cc" />
     <ClCompile Include="src\render\icons.cc" />
@@ -190,6 +192,8 @@
     <ClInclude Include="src\pc\uefi_parts.hh" />
     <ClInclude Include="src\pc\uhci.hh" />
     <ClInclude Include="src\pc\usb.hh" />
+    <ClInclude Include="src\pc\usb_hub.hh" />
+    <ClInclude Include="src\pc\usb_storage.hh" />
     <ClInclude Include="src\pc\vga.hh" />
     <ClInclude Include="src\render\gpu.hh" />
     <ClInclude Include="src\runtime\runtime.hh" />
