@@ -25,6 +25,7 @@ namespace pc {
 		void attach ( disk_file* target ) {
 
 			disk = target;
+			reset_port ( );
 
 		}
 
