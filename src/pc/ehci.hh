@@ -29,6 +29,7 @@ namespace pc {
 		uint32_t memory_base = default_memory;
 		uint64_t transfers_run = 0;
 		uint64_t passes = 0;
+		uint64_t periodic_frames = 0;
 
 	private:
 
@@ -61,6 +62,8 @@ namespace pc {
 
 		void run_async ( );
 
+		void run_periodic ( );
+
 		bool run_head ( uint32_t head );
 
 		outcome execute ( uint32_t head, usb_device* device, uint8_t endpoint, uint32_t max_packet );
@@ -82,6 +85,8 @@ namespace pc {
 		uint32_t ports [ port_count ] = { };
 		usb_device* devices [ port_count ] = { };
 		uint64_t started_at = 0;
+		uint32_t last_frame = 0;
+		bool periodic_started = false;
 		uint8_t scratch [ 1024 ] = { };
 
 	};

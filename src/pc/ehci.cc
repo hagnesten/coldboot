@@ -642,9 +642,74 @@ namespace pc {
 
 	}
 
+	void ehci::run_periodic ( ) {
+
+		if ( !( command & COMMAND_RUN ) || !( command & COMMAND_PERIODIC ) || !periodic ) {
+
+			periodic_started = false;
+
+			return;
+
+		}
+
+		uint32_t now_frame = register_read ( OPERATIONAL + FRAME_INDEX ) >> 3;
+
+		if ( !periodic_started ) {
+
+			last_frame = ( now_frame - 1 ) & 0x7FF;
+			periodic_started = true;
+
+		}
+
+		uint32_t behind = ( now_frame - last_frame ) & 0x7FF;
+
+		if ( behind > 8 ) {
+
+			last_frame = ( now_frame - 8 ) & 0x7FF;
+			behind = 8;
+
+		}
+
+		for ( uint32_t step = 0; step < behind; step++ ) {
+
+			last_frame = ( last_frame + 1 ) & 0x7FF;
+			periodic_frames++;
+
+			uint32_t link = read32 ( periodic + ( last_frame & 1023 ) * 4 );
+			uint32_t seen [ 32 ];
+			uint32_t seen_count = 0;
+
+			for ( int32_t visits = 0; visits < 32 && !( link & LINK_TERMINATE ); visits++ ) {
+
+				uint32_t at = link & ~0x1Fu;
+				uint32_t type = link >> 1 & 3;
+				bool repeated = false;
+
+				for ( uint32_t i = 0; i < seen_count; i++ )
+					repeated = repeated || seen [ i ] == at;
+
+				if ( repeated || !at )
+					break;
+
+				seen [ seen_count++ ] = at;
+
+				if ( type == 1 && ( read32 ( at + HEAD_CHARACTERISTICS + 4 ) & 0xFF ) )
+					run_head ( at );
+
+				link = read32 ( at );
+
+			}
+
+		}
+
+		update_line ( );
+
+	}
+
 	void ehci::advance ( uint64_t ) {
 
 		run_async ( );
+		run_periodic ( );
 
 	}
 
