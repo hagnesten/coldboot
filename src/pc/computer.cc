@@ -433,6 +433,7 @@ namespace pc {
 			efi_links.seed = links.seed;
 			efi_links.variables = options.variables [ 0 ] ? options.variables : nullptr;
 			efi_links.keep_variables = !options.disposable;
+			efi_links.forget_seal_keys = options.forget_seal_keys;
 			uefi_firmware = new uefi ( );
 
 			if ( !uefi_firmware->install ( efi_links, error, sizeof ( error ) ) )

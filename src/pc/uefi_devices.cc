@@ -1,6 +1,7 @@
 #include "pc/uefi_parts.hh"
 #include "base/files.hh"
 #include "video/cga.hh"
+#include "pc/sealing.hh"
 
 namespace pc {
 
@@ -1278,6 +1279,51 @@ namespace pc {
 
 	}
 
+	bool uefi::named ( const uint16_t* name, uint32_t length, const char* wanted ) const {
+
+		uint32_t i = 0;
+
+		for ( ; i < length && wanted [ i ]; i++ )
+			if ( name [ i ] != static_cast < uint16_t > ( wanted [ i ] ) )
+				return false;
+
+		return i == length && !wanted [ i ];
+
+	}
+
+	int32_t uefi::find_variable ( const char* name, const uint8_t* guid ) const {
+
+		for ( int32_t i = 0; i < variables.count ( ); i++ ) {
+
+			const variable& item = variables [ i ];
+
+			if ( same_guid ( item.guid, guid ) && item.name.size ( ) && named ( item.name.data ( ), static_cast < uint32_t > ( item.name.size ( ) - 1 ), name ) )
+				return i;
+
+		}
+
+		return -1;
+
+	}
+
+	bool uefi::seal_enforced ( ) const {
+
+		int32_t index = find_variable ( "SealKeys", guid_seal );
+
+		return index >= 0 && variables [ index ].data.size ( ) && !( variables [ index ].data.size ( ) % sealing::key_size );
+
+	}
+
+	void uefi::settle_seal_mode ( ) {
+
+		uint8_t enforced = seal_enforced ( ) ? 1 : 0;
+		uint8_t setup = enforced ? 0 : 1;
+
+		set_variable ( "SecureBoot", guid_global, 0x06, &enforced, 1 );
+		set_variable ( "SetupMode", guid_global, 0x06, &setup, 1 );
+
+	}
+
 	void uefi::load_variables ( ) {
 
 		base::list < char > raw;
@@ -1364,8 +1410,6 @@ namespace pc {
 
 		static const char language [ ] = "en-US";
 		static const char lang [ ] = "eng";
-		uint8_t zero = 0;
-		uint8_t one = 1;
 		uint64_t none = 0;
 		uint16_t wait = 0;
 
@@ -1373,8 +1417,21 @@ namespace pc {
 		set_variable ( "PlatformLangCodes", guid_global, 0x06, language, 6 );
 		set_variable ( "Lang", guid_global, 0x07, lang, 4 );
 		set_variable ( "LangCodes", guid_global, 0x06, lang, 4 );
-		set_variable ( "SecureBoot", guid_global, 0x06, &zero, 1 );
-		set_variable ( "SetupMode", guid_global, 0x06, &one, 1 );
+		if ( link.forget_seal_keys ) {
+
+			int32_t keys = find_variable ( "SealKeys", guid_seal );
+
+			if ( keys >= 0 ) {
+
+				variables.remove_at ( static_cast < size_t > ( keys ) );
+				save_variables ( );
+				log ( "seal keys forgotten, the firmware is back in setup mode\n" );
+
+			}
+
+		}
+
+		settle_seal_mode ( );
 		set_variable ( "OsIndicationsSupported", guid_global, 0x06, &none, 8 );
 
 		bool timed = false;
@@ -1606,6 +1663,26 @@ namespace pc {
 				if ( size > 0x10000 || ( size && !data_at ) )
 					return INVALID_PARAMETER;
 
+				if ( same_guid ( guid, guid_global ) && ( named ( name, length, "SecureBoot" ) || named ( name, length, "SetupMode" ) ) )
+					return WRITE_PROTECTED;
+
+				bool seal_keys = same_guid ( guid, guid_seal ) && named ( name, length, "SealKeys" );
+
+				if ( seal_keys ) {
+
+					if ( seal_enforced ( ) || exited ) {
+
+						log ( "refused a change to the seal keys outside setup mode\n" );
+
+						return SECURITY_VIOLATION;
+
+					}
+
+					if ( !size || size % sealing::key_size || append || ( attributes & 0x07 ) != 0x03 )
+						return INVALID_PARAMETER;
+
+				}
+
 				if ( exited && attributes && !( attributes & 4 ) )
 					return INVALID_PARAMETER;
 
@@ -1657,6 +1734,13 @@ namespace pc {
 
 				if ( attributes & 1 )
 					save_variables ( );
+
+				if ( seal_keys ) {
+
+					settle_seal_mode ( );
+					log ( "seal key enrolled, the firmware now boots only sealed images\n" );
+
+				}
 
 				return SUCCESS;
 

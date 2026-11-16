@@ -231,6 +231,9 @@
     <ClCompile Include="src\pc\platform.cc">
       <Filter>src\pc</Filter>
     </ClCompile>
+    <ClCompile Include="src\pc\sealing.cc">
+      <Filter>src\pc</Filter>
+    </ClCompile>
     <ClCompile Include="src\pc\smbios.cc">
       <Filter>src\pc</Filter>
     </ClCompile>
@@ -531,6 +534,9 @@
       <Filter>src\pc</Filter>
     </ClInclude>
     <ClInclude Include="src\pc\platform.hh">
+      <Filter>src\pc</Filter>
+    </ClInclude>
+    <ClInclude Include="src\pc\sealing.hh">
       <Filter>src\pc</Filter>
     </ClInclude>
     <ClInclude Include="src\pc\smbios.hh">

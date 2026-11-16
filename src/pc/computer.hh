@@ -32,6 +32,7 @@ namespace pc {
 		bool ask_internet = false;
 		bool fresh_identity = false;
 		bool disposable = false;
+		bool forget_seal_keys = false;
 		bool xhci = false;
 		bool ehci = false;
 		char proxy [ 128 ] = { };

@@ -19,6 +19,7 @@ namespace pc {
 		static constexpr uint64_t OUT_OF_RESOURCES = fault | 9;
 		static constexpr uint64_t MEDIA_CHANGED = fault | 13;
 		static constexpr uint64_t NOT_FOUND = fault | 14;
+		static constexpr uint64_t SECURITY_VIOLATION = fault | 26;
 
 		enum memory_type : uint32_t {
 
@@ -155,6 +156,7 @@ namespace pc {
 		extern const uint8_t guid_acpi_10 [ 16 ];
 		extern const uint8_t guid_smbios [ 16 ];
 		extern const uint8_t guid_global [ 16 ];
+		extern const uint8_t guid_seal [ 16 ];
 		extern const uint8_t guid_exit_group [ 16 ];
 		extern const uint8_t guid_virtual_group [ 16 ];
 		extern const uint8_t guid_system_partition [ 16 ];

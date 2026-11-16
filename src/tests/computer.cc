@@ -626,6 +626,10 @@ namespace tests {
 
 				options->ehci = true;
 
+			} else if ( base::same_text ( arguments [ i ], L"--nested" ) ) {
+
+				hv::request_nested ( true );
+
 			} else if ( base::same_text ( arguments [ i ], L"--nvme" ) ) {
 
 				const wchar_t* path = next ( );
@@ -649,6 +653,8 @@ namespace tests {
 				options->uefi = true;
 			else if ( base::same_text ( arguments [ i ], L"--disposable" ) )
 				options->disposable = true;
+			else if ( base::same_text ( arguments [ i ], L"--forget-seal-keys" ) )
+				options->forget_seal_keys = true;
 			else if ( base::same_text ( arguments [ i ], L"--fresh-identity" ) )
 				options->fresh_identity = true;
 			else if ( base::same_text ( arguments [ i ], L"--no-lan" ) )

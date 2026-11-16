@@ -86,6 +86,7 @@
     <ClCompile Include="src\pc\pe.cc" />
     <ClCompile Include="src\pc\peripherals.cc" />
     <ClCompile Include="src\pc\platform.cc" />
+    <ClCompile Include="src\pc\sealing.cc" />
     <ClCompile Include="src\pc\smbios.cc" />
     <ClCompile Include="src\pc\storage.cc" />
     <ClCompile Include="src\pc\tools.cc" />
@@ -188,6 +189,7 @@
     <ClInclude Include="src\pc\pe.hh" />
     <ClInclude Include="src\pc\peripherals.hh" />
     <ClInclude Include="src\pc\platform.hh" />
+    <ClInclude Include="src\pc\sealing.hh" />
     <ClInclude Include="src\pc\smbios.hh" />
     <ClInclude Include="src\pc\storage.hh" />
     <ClInclude Include="src\pc\tools.hh" />

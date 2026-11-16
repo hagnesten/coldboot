@@ -4,6 +4,7 @@
 #include "pc/computer.hh"
 #include "pc/fat.hh"
 #include "pc/pe.hh"
+#include "pc/sealing.hh"
 #include "tests/harness.hh"
 #include <windows.h>
 
@@ -258,6 +259,11 @@ namespace tests {
 		bool moved = pc::pe_place ( program, 0x600, placed, 0x20000000 ) && placed [ 0x1000 ] == 0x48 && placed [ 0x1100 ] == 0x80 && placed [ 0x1101 ] == 0x10 && placed [ 0x1103 ] == 0x20;
 
 		expect ( inspected && moved, "uefi: the PE loader reads an x64 EFI program, lays out its section and applies a DIR64 relocation" );
+		expect ( pc::sealing::self_test ( ), "uefi: sealed boot hashes with SHA-512 and checks the Ed25519 reference signature" );
+
+		uint8_t enrolled [ 32 ] = { };
+
+		expect ( pc::sealing::check ( program, 0x600, enrolled, 32 ) == pc::sealing::outcome::unsealed, "uefi: sealed boot tells an unsealed program apart" );
 
 		uint8_t* volume = static_cast < uint8_t* > ( runtime_allocate_zero ( 2048 * 512 ) );
 		uint8_t* disk = static_cast < uint8_t* > ( runtime_allocate_zero ( 4096 * 512 ) );

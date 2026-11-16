@@ -22,6 +22,7 @@ namespace pc {
 		uint64_t seed = 0;
 		const wchar_t* variables = nullptr;
 		bool keep_variables = true;
+		bool forget_seal_keys = false;
 
 	};
 
@@ -209,6 +210,14 @@ namespace pc {
 		void save_variables ( );
 
 		void set_variable ( const char* name, const uint8_t* guid, uint32_t attributes, const void* data, uint32_t size );
+
+		int32_t find_variable ( const char* name, const uint8_t* guid ) const;
+
+		bool named ( const uint16_t* name, uint32_t length, const char* wanted ) const;
+
+		bool seal_enforced ( ) const;
+
+		void settle_seal_mode ( );
 
 		bool load_image ( const uint8_t* file, uint32_t size, uint64_t parent, uint64_t device, const uint8_t* path, uint32_t path_size, uint64_t& handle, char* why );
 
