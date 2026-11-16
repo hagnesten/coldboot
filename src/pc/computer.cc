@@ -237,7 +237,8 @@ namespace pc {
 		board->pci.attach ( 1, 1, storage );
 		board->pci.attach ( 1, 2, usb );
 		board->pci.attach ( 2, 0, video );
-		usb->plug ( 0, tablet );
+		if ( !options.ehci || options.xhci )
+			usb->plug ( 0, tablet );
 
 		if ( options.usb_disk [ 0 ] ) {
 
@@ -270,6 +271,13 @@ namespace pc {
 
 			if ( hub && !options.xhci )
 				high_usb->plug ( 0, hub );
+
+			if ( !options.xhci ) {
+
+				tablet->high_speed = true;
+				high_usb->plug ( 1, tablet );
+
+			}
 
 		}
 
