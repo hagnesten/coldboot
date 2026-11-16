@@ -121,6 +121,7 @@ namespace pc {
 		set_bar ( 0, memory_size, false, default_memory );
 		set_interrupt ( 1, 11 );
 		add_msi ( 0x50 );
+		add_msix ( 0x70, queue_count, 0, vector_table, vector_pending );
 		config [ 0x04 ] = 0x06;
 		config [ 0x2C ] = 0x86;
 		config [ 0x2D ] = 0x80;
@@ -301,6 +302,10 @@ namespace pc {
 	uint64_t nvme::read ( uint64_t address, uint32_t size ) {
 
 		uint32_t offset = static_cast < uint32_t > ( address - memory_base );
+		uint64_t table_value = 0;
+
+		if ( msix_access ( offset, size, false, table_value, vm ) )
+			return table_value;
 
 		if ( size == 8 && !( offset & 7 ) )
 			return static_cast < uint64_t > ( register_read ( offset ) ) | static_cast < uint64_t > ( register_read ( offset + 4 ) ) << 32;
@@ -314,6 +319,9 @@ namespace pc {
 	void nvme::write ( uint64_t address, uint32_t size, uint64_t value ) {
 
 		uint32_t offset = static_cast < uint32_t > ( address - memory_base );
+
+		if ( msix_access ( offset, size, true, value, vm ) )
+			return;
 
 		if ( offset & 3 )
 			return;
@@ -468,6 +476,7 @@ namespace pc {
 					made.tail = 0;
 					made.phase = true;
 					made.interrupts = eleven & 2;
+					made.vector = eleven >> 16 < queue_count ? eleven >> 16 : 0;
 
 				}
 
@@ -776,11 +785,34 @@ namespace pc {
 		if ( msi_enabled ( ) && target.interrupts )
 			line = false;
 
+		if ( msix_enabled ( ) && target.interrupts )
+			vector_lines [ target.vector ] = false;
+
 		update_line ( );
 
 	}
 
 	void nvme::update_line ( ) {
+
+		if ( msix_enabled ( ) ) {
+
+			bool wanted [ queue_count ] = { };
+
+			for ( uint32_t i = 0; i < queue_count && ( control & CONFIG_ENABLE ); i++ ) {
+
+				const completion& done = completions [ i ];
+
+				if ( done.used && done.interrupts && done.head != done.tail )
+					wanted [ done.vector ] = true;
+
+			}
+
+			for ( uint32_t v = 0; v < queue_count; v++ )
+				signal_vector ( vm, v, wanted [ v ], vector_lines [ v ] );
+
+			return;
+
+		}
 
 		bool wanted = false;
 

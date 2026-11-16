@@ -13,6 +13,8 @@ namespace pc {
 		static constexpr uint32_t default_memory = 0xE1040000;
 		static constexpr uint32_t memory_size = 0x4000;
 		static constexpr uint32_t queue_count = 16;
+		static constexpr uint32_t vector_table = 0x2000;
+		static constexpr uint32_t vector_pending = 0x3000;
 		static constexpr uint32_t queue_entries = 1024;
 		static constexpr uint32_t page_size = 4096;
 		static constexpr uint32_t sector_size = 512;
@@ -63,6 +65,7 @@ namespace pc {
 			uint32_t tail = 0;
 			bool phase = true;
 			bool interrupts = false;
+			uint32_t vector = 0;
 
 		};
 
@@ -105,6 +108,7 @@ namespace pc {
 		disk_file* disk = nullptr;
 		uint32_t irq = 20;
 		bool line = false;
+		bool vector_lines [ queue_count ] = { };
 		uint32_t control = 0;
 		uint32_t status = 0;
 		uint32_t attributes = 0;

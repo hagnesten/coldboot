@@ -10,19 +10,39 @@ namespace pc {
 	public:
 
 		static constexpr uint8_t msi_id = 0x05;
+		static constexpr uint8_t msix_id = 0x11;
 		static constexpr uint32_t msi_window = 0xFEE00000;
+		static constexpr uint32_t msix_room = 32;
+		static constexpr uint32_t msix_entry = 16;
 
 		virtual ~pci_function ( ) = default;
 
 		void add_msi ( uint8_t offset );
 
+		void add_msix ( uint8_t offset, uint32_t vectors, uint8_t bar, uint32_t table, uint32_t pending );
+
 		bool msi_enabled ( ) const;
+
+		bool msix_enabled ( ) const;
 
 		bool send_msi ( hv::machine& target ) const;
 
+		bool deliver ( hv::machine& target, uint32_t address, uint32_t high, uint32_t data ) const;
+
 		void signal ( platform_bus& bus, hv::machine& target, uint32_t irq, bool wanted, bool& line );
 
+		void signal_vector ( hv::machine& target, uint32_t vector, bool wanted, bool& line );
+
+		bool msix_access ( uint32_t offset, uint32_t size, bool writing, uint64_t& value, hv::machine& target );
+
 		uint8_t msi_offset = 0;
+		uint8_t msix_offset = 0;
+		uint32_t msix_vectors = 0;
+		uint8_t msix_bar = 0;
+		uint32_t msix_table = 0;
+		uint32_t msix_pending = 0;
+		uint8_t msix_entries [ msix_room * msix_entry ] = { };
+		uint32_t msix_waiting = 0;
 		bool pin_high = false;
 		uint64_t messages_sent = 0;
 

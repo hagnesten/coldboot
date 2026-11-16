@@ -50,17 +50,52 @@ namespace pc {
 
 	}
 
+	void pci_function::add_msix ( uint8_t offset, uint32_t vectors, uint8_t bar, uint32_t table, uint32_t pending ) {
+
+		msix_offset = offset;
+		msix_vectors = vectors < msix_room ? vectors : msix_room;
+		msix_bar = bar;
+		msix_table = table;
+		msix_pending = pending;
+		config [ 0x06 ] = static_cast < uint8_t > ( config [ 0x06 ] | 0x10 );
+		config [ offset ] = msix_id;
+		config [ offset + 1 ] = config [ 0x34 ];
+		config [ 0x34 ] = offset;
+		config [ offset + 2 ] = static_cast < uint8_t > ( msix_vectors - 1 );
+		config [ offset + 3 ] = static_cast < uint8_t > ( ( msix_vectors - 1 ) >> 8 & 0x07 );
+
+		for ( uint32_t i = 0; i < 4; i++ ) {
+
+			config [ offset + 4 + i ] = static_cast < uint8_t > ( ( table | bar ) >> ( i * 8 ) );
+			config [ offset + 8 + i ] = static_cast < uint8_t > ( ( pending | bar ) >> ( i * 8 ) );
+
+		}
+
+		for ( uint32_t v = 0; v < msix_room; v++ )
+			msix_entries [ v * msix_entry + 12 ] = 1;
+
+	}
+
 	bool pci_function::msi_enabled ( ) const {
 
-		return msi_offset && ( config [ msi_offset + 2 ] & 1 );
+		return !msix_enabled ( ) && msi_offset && ( config [ msi_offset + 2 ] & 1 );
+
+	}
+
+	bool pci_function::msix_enabled ( ) const {
+
+		return msix_offset && ( config [ msix_offset + 3 ] & 0x80 );
 
 	}
 
 	bool pci_function::send_msi ( hv::machine& target ) const {
 
-		uint32_t address = read_config ( msi_offset + 4u, 4 );
-		uint32_t high = read_config ( msi_offset + 8u, 4 );
-		uint32_t data = read_config ( msi_offset + 12u, 2 );
+		return deliver ( target, read_config ( msi_offset + 4u, 4 ), read_config ( msi_offset + 8u, 4 ), read_config ( msi_offset + 12u, 2 ) );
+
+	}
+
+	bool pci_function::deliver ( hv::machine& target, uint32_t address, uint32_t high, uint32_t data ) const {
+
 		uint32_t mode = data >> 8 & 7;
 		uint32_t type = WHvX64InterruptTypeFixed;
 
@@ -78,7 +113,113 @@ namespace pc {
 
 	}
 
+	static uint32_t entry_word ( const uint8_t* entries, uint32_t vector, uint32_t word ) {
+
+		const uint8_t* at = entries + vector * pci_function::msix_entry + word * 4;
+
+		return static_cast < uint32_t > ( at [ 0 ] ) | static_cast < uint32_t > ( at [ 1 ] ) << 8 | static_cast < uint32_t > ( at [ 2 ] ) << 16 | static_cast < uint32_t > ( at [ 3 ] ) << 24;
+
+	}
+
+	void pci_function::signal_vector ( hv::machine& target, uint32_t vector, bool wanted, bool& line ) {
+
+		if ( vector >= msix_vectors )
+			vector = 0;
+
+		bool rising = wanted && !line;
+
+		line = wanted;
+
+		if ( !rising )
+			return;
+
+		bool masked = ( config [ msix_offset + 3 ] & 0x40 ) || ( entry_word ( msix_entries, vector, 3 ) & 1 );
+
+		if ( masked ) {
+
+			msix_waiting |= 1u << vector;
+
+			return;
+
+		}
+
+		if ( deliver ( target, entry_word ( msix_entries, vector, 0 ), entry_word ( msix_entries, vector, 1 ), entry_word ( msix_entries, vector, 2 ) ) )
+			messages_sent++;
+
+	}
+
+	bool pci_function::msix_access ( uint32_t offset, uint32_t size, bool writing, uint64_t& value, hv::machine& target ) {
+
+		if ( !msix_offset )
+			return false;
+
+		if ( offset >= msix_pending && offset < msix_pending + 8 ) {
+
+			if ( !writing )
+				value = static_cast < uint64_t > ( msix_waiting ) >> ( ( offset - msix_pending ) * 8 );
+
+			return true;
+
+		}
+
+		if ( offset < msix_table || offset >= msix_table + msix_vectors * msix_entry )
+			return false;
+
+		uint32_t at = offset - msix_table;
+
+		if ( !writing ) {
+
+			value = 0;
+
+			for ( uint32_t i = 0; i < size && at + i < msix_vectors * msix_entry; i++ )
+				value |= static_cast < uint64_t > ( msix_entries [ at + i ] ) << ( i * 8 );
+
+			return true;
+
+		}
+
+		for ( uint32_t i = 0; i < size && at + i < msix_vectors * msix_entry; i++ ) {
+
+			uint32_t place = at + i;
+
+			if ( place % msix_entry >= 13 )
+				continue;
+
+			msix_entries [ place ] = static_cast < uint8_t > ( place % msix_entry == 12 ? ( value >> ( i * 8 ) ) & 1 : value >> ( i * 8 ) );
+
+		}
+
+		uint32_t vector = at / msix_entry;
+
+		if ( ( msix_waiting & 1u << vector ) && !( entry_word ( msix_entries, vector, 3 ) & 1 ) && !( config [ msix_offset + 3 ] & 0x40 ) && msix_enabled ( ) ) {
+
+			msix_waiting &= ~( 1u << vector );
+
+			if ( deliver ( target, entry_word ( msix_entries, vector, 0 ), entry_word ( msix_entries, vector, 1 ), entry_word ( msix_entries, vector, 2 ) ) )
+				messages_sent++;
+
+		}
+
+		return true;
+
+	}
+
 	void pci_function::signal ( platform_bus& bus, hv::machine& target, uint32_t irq, bool wanted, bool& line ) {
+
+		if ( msix_enabled ( ) ) {
+
+			if ( pin_high ) {
+
+				pin_high = false;
+				bus.set_irq ( irq, false );
+
+			}
+
+			signal_vector ( target, 0, wanted, line );
+
+			return;
+
+		}
 
 		if ( msi_enabled ( ) ) {
 
@@ -136,7 +277,12 @@ namespace pc {
 			uint32_t at = offset + i;
 			uint8_t byte = static_cast < uint8_t > ( value >> ( i * 8 ) );
 
-			if ( msi_offset && at >= msi_offset && at < msi_offset + 14u ) {
+			if ( msix_offset && at >= msix_offset && at < msix_offset + 12u ) {
+
+				if ( at == msix_offset + 3u )
+					config [ at ] = static_cast < uint8_t > ( ( config [ at ] & 0x07 ) | ( byte & 0xC0 ) );
+
+			} else if ( msi_offset && at >= msi_offset && at < msi_offset + 14u ) {
 
 				uint32_t relative = at - msi_offset;
 
