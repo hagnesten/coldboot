@@ -36,6 +36,10 @@ namespace hv {
 
 	bool present ( );
 
+	void request_nested ( bool wanted );
+
+	bool nested_requested ( );
+
 	enum partition_feature : uint32_t {
 
 		PARTITION_APIC = 1,

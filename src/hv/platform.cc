@@ -97,6 +97,20 @@ namespace hv {
 
 	}
 
+	static bool nested_wanted = false;
+
+	void request_nested ( bool wanted ) {
+
+		nested_wanted = wanted;
+
+	}
+
+	bool nested_requested ( ) {
+
+		return nested_wanted;
+
+	}
+
 	bool partition::create ( uint32_t processor_count, uint64_t memory_bytes, uint32_t features ) {
 
 		destroy ( );
@@ -154,6 +168,18 @@ namespace hv {
 
 			if ( FAILED ( result ) )
 				return fail ( "This PC's hypervisor can't hand CPUID and MSR accesses to Coldboot", result );
+
+		}
+
+		if ( SUCCEEDED ( result ) && nested_wanted ) {
+
+			WHV_PARTITION_PROPERTY nested = { };
+
+			nested.NestedVirtualization = TRUE;
+			result = api->set_property ( handle, WHvPartitionPropertyCodeNestedVirtualization, &nested, sizeof ( nested ) );
+
+			if ( FAILED ( result ) )
+				return fail ( "This PC's hypervisor can't run a hypervisor inside the guest", result );
 
 		}
 
